@@ -62,7 +62,6 @@ const inputCloseUsername = document.querySelector(".form__input--user");
 const inputClosePin = document.querySelector(".form__input--pin");
 
 const displayMovments = function (movements) {
-  console.log(containerMovements.innerHTML);
   containerMovements.innerHTML = ``;
   movements.forEach(function (moves, index) {
     const type = moves > 0 ? `deposit` : `withdrawal`;
@@ -72,13 +71,39 @@ const displayMovments = function (movements) {
       index + 1
     } ${type}</div>
           <div class="movements__date">3 days ago</div>
-          <div class="movements__value">${moves}</div>
+          <div class="movements__value">${moves}€</div>
         </div>
      `;
     containerMovements.insertAdjacentHTML(`afterbegin`, html);
   });
 };
 displayMovments(account1.movements);
+
+const calcDisplayBalance = function (movements) {
+  const acu = movements.reduce(function (acu, mov) {
+    return acu + mov;
+  }, 0);
+  labelBalance.textContent = `${acu}€`;
+};
+calcDisplayBalance(account1.movements);
+
+const calcDisplaySummary = function (movements) {
+  const income = movements
+    .filter((mov) => mov > 0)
+    .reduce((acu, mov) => acu + mov, 0);
+  labelSumIn.textContent = `${income}€`;
+  const outcome = movements
+    .filter((mov) => mov < 0)
+    .reduce((acu, mov) => acu + mov, 0);
+  labelSumOut.textContent = `${Math.abs(outcome)}€`;
+  const interest = movements
+    .filter((mov) => mov > 0)
+    .map((dep) => (dep * 1.2) / 100)
+    .filter((int) => int >= 1)
+    .reduce((acu, int) => acu + int);
+  labelSumInterest.textContent = `${interest}€`;
+};
+calcDisplaySummary(account1.movements);
 
 const CreateUserName = function (accs) {
   accs.forEach((acc) => {
