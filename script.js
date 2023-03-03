@@ -77,7 +77,6 @@ const displayMovments = function (movements) {
     containerMovements.insertAdjacentHTML(`afterbegin`, html);
   });
 };
-displayMovments(account1.movements);
 
 const calcDisplayBalance = function (movements) {
   const acu = movements.reduce(function (acu, mov) {
@@ -85,25 +84,23 @@ const calcDisplayBalance = function (movements) {
   }, 0);
   labelBalance.textContent = `${acu}€`;
 };
-calcDisplayBalance(account1.movements);
 
-const calcDisplaySummary = function (movements) {
-  const income = movements
+const calcDisplaySummary = function (user) {
+  const income = user.movements
     .filter((mov) => mov > 0)
     .reduce((acu, mov) => acu + mov, 0);
   labelSumIn.textContent = `${income}€`;
-  const outcome = movements
+  const outcome = user.movements
     .filter((mov) => mov < 0)
     .reduce((acu, mov) => acu + mov, 0);
   labelSumOut.textContent = `${Math.abs(outcome)}€`;
-  const interest = movements
+  const interest = user.movements
     .filter((mov) => mov > 0)
-    .map((dep) => (dep * 1.2) / 100)
+    .map((dep) => (dep * user.interestRate) / 100)
     .filter((int) => int >= 1)
     .reduce((acu, int) => acu + int);
   labelSumInterest.textContent = `${interest}€`;
 };
-calcDisplaySummary(account1.movements);
 
 const CreateUserName = function (accs) {
   accs.forEach((acc) => {
@@ -116,3 +113,28 @@ const CreateUserName = function (accs) {
 };
 
 CreateUserName(accounts);
+let currentUser;
+btnLogin.addEventListener(`click`, (e) => {
+  e.preventDefault();
+  currentUser = accounts.find((acc) => {
+    return acc.username === inputLoginUsername.value;
+  });
+
+  if (currentUser?.pin === Number(inputLoginPin.value)) {
+    // display welcome message
+    labelWelcome.textContent = `Welcome back ${
+      currentUser.owner.split(` `)[0]
+    }`;
+    containerApp.style.opacity = 100;
+    // clear input fields
+    inputLoginUsername.value = inputLoginPin.value = ``;
+    inputLoginPin.blur();
+    // display movements , balanace, summary
+    displayMovments(currentUser.movements);
+    calcDisplayBalance(currentUser.movements);
+    calcDisplaySummary(currentUser);
+  } else {
+    containerApp.style.opacity = 0;
+    labelWelcome.textContent = `Wrong password or username`;
+  }
+});
