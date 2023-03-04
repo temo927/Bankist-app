@@ -137,8 +137,8 @@ btnLogin.addEventListener(`click`, (e) => {
     // display movements , balanace, summary
     updateUI(currentUser);
   } else {
-    containerApp.style.opacity = 0;
-    labelWelcome.textContent = `Wrong password or username`;
+    // containerApp.style.opacity = 0;
+    // labelWelcome.textContent = `Wrong password or username`;
   }
 });
 btnTransfer.addEventListener(`click`, (e) => {
@@ -160,4 +160,25 @@ btnTransfer.addEventListener(`click`, (e) => {
     // updateui
     updateUI(currentUser);
   }
+});
+
+btnClose.addEventListener(`click`, (e) => {
+  e.preventDefault();
+
+  if (
+    inputCloseUsername.value === currentUser.username &&
+    Number(inputClosePin.value) === currentUser.pin
+  ) {
+    const index = accounts.findIndex(
+      (acc) => acc.username === currentUser.username
+    );
+    //deleting account
+    accounts.splice(index, 1);
+    //hiding ui
+    containerApp.style.opacity = 0;
+    // default welcome message
+    labelWelcome.textContent = `Log in to get started`;
+  }
+  // clear input field
+  inputCloseUsername.value = inputClosePin.value = ``;
 });
