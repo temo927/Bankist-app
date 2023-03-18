@@ -195,9 +195,11 @@ btnLoan.addEventListener(`click`, (e) => {
   e.preventDefault();
   const amount = Math.floor(inputLoanAmount.value);
   if (amount > 0 && currentUser.movements.some((mov) => mov >= amount * 0.1)) {
-    currentUser.movements.push(amount);
-    currentUser.movementsDates.push(new Date().toISOString());
-    updateUI(currentUser);
+    setTimeout(() => {
+      currentUser.movements.push(amount);
+      currentUser.movementsDates.push(new Date().toISOString());
+      updateUI(currentUser);
+    }, 2500);
   }
   inputLoanAmount.value = ``;
 });
